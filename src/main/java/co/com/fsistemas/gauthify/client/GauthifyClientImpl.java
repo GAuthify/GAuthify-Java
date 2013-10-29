@@ -1,4 +1,4 @@
-package co.com.fsistemas.gauthify.http;
+package co.com.fsistemas.gauthify.client;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -12,12 +12,11 @@ import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.map.ObjectMapper;
 
-import co.com.fsistemas.gauthify.client.GauthifyClient;
-import co.com.fsistemas.gauthify.client.GauthifyResponse;
 import co.com.fsistemas.gauthify.exceptions.GauthifyApiException;
 import co.com.fsistemas.gauthify.exceptions.GauthifyNotFoundException;
 import co.com.fsistemas.gauthify.exceptions.GauthifyParameterException;
 import co.com.fsistemas.gauthify.exceptions.GauthifyRateLimitException;
+import co.com.fsistemas.gauthify.http.GauthifyHttpClient;
 
 public class GauthifyClientImpl implements GauthifyClient {
 	public int mode = DEFAULT_MODE;
@@ -168,7 +167,10 @@ public class GauthifyClientImpl implements GauthifyClient {
 		Map<String, String> headers = new HashMap<String, String>();
 		headers.put("Authorization", generateBasicAuthString(EMPTY_USERNAME, apiKey));
 
-		HttpResponse response = gauthifyHttpClient.getURL(url, headers, null);
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("token",token);
+
+		HttpResponse response = gauthifyHttpClient.postURL(url, headers, params);
 
 		GauthifyResponse userResponse = this.handleResponse(response);
 

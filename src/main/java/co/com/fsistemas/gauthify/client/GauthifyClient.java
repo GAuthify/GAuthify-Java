@@ -38,7 +38,7 @@ public interface GauthifyClient {
 
 	public static final String USER_URI = "users/%s/";
 	public static final String USERS_URI = "users/";
-	public static final String USER_TOKEN_URI = "token/%s/";
+	public static final String USER_TOKEN_URI = "token/";
 	public static final String USER_SMS_URI = "sms/";
 	public static final String USER_VOICE_URI = "voice/";
 	public static final String USER_EMAIL_URI = "email/";

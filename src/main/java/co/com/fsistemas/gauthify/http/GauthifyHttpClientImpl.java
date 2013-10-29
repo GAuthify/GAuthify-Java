@@ -1,4 +1,4 @@
-package co.com.fsistemas.gauthify.client;
+package co.com.fsistemas.gauthify.http;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -21,7 +21,6 @@ import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.HTTP;
 
-import co.com.fsistemas.gauthify.http.GauthifyHttpClient;
 
 public class GauthifyHttpClientImpl implements GauthifyHttpClient {
 	/**

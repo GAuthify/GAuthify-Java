@@ -213,13 +213,14 @@ public class GauthifyClientImpl implements GauthifyClient {
 	 */
 	@Override
 	public GauthifyResponse createUser(String userId,String displayName,String email,String phoneNumber) throws Exception {
-		String url = getUrlBase() + String.format(USER_URI, userId);
+		String url = getUrlBase() + USERS_URI;
 
 		Map<String, String> headers = new HashMap<String, String>();
 		headers.put("Authorization", generateBasicAuthString(EMPTY_USERNAME, apiKey));
 
 		Map<String, String> fields = new HashMap<String, String>();
 
+		fields.put("unique_id", userId);
 		fields.put("display_name", displayName);
 		fields.put("phone_number", phoneNumber);
 		fields.put("email", email);

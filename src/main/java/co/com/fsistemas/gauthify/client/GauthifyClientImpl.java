@@ -13,25 +13,17 @@ import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import co.com.fsistemas.gauthify.exceptions.GauthifyApiException;
+import co.com.fsistemas.gauthify.exceptions.GauthifyException;
 import co.com.fsistemas.gauthify.exceptions.GauthifyNotFoundException;
 import co.com.fsistemas.gauthify.exceptions.GauthifyParameterException;
 import co.com.fsistemas.gauthify.exceptions.GauthifyRateLimitException;
 import co.com.fsistemas.gauthify.http.GauthifyHttpClient;
 
 public class GauthifyClientImpl implements GauthifyClient {
-	public int mode = DEFAULT_MODE;
 	private boolean enableDebug = true;
 
 	private String apiKey;
 	private GauthifyHttpClient gauthifyHttpClient;
-	
-	public int getMode() {
-		return mode;
-	}
-
-	public void setMode(int mode) {
-		this.mode = mode;
-	}
 
 	@Override
 	public String getApiKey() {
@@ -122,16 +114,12 @@ public class GauthifyClientImpl implements GauthifyClient {
 	 */
 	@Override
 	public GauthifyResponse getUsers() throws Exception {
-		final String url = getUrlBase() + USERS_URI;
+		String urlModule =  USERS_URI;
 
 		Map<String, String> headers = new HashMap<String, String>();
 		headers.put("Authorization", generateBasicAuthString(EMPTY_USERNAME, apiKey));
 
-		HttpResponse response = gauthifyHttpClient.getURL(url, headers, null);
-
-		GauthifyResponse userResponse = this.handleResponse(response);
-
-		return userResponse;
+		return this.handleRequest("GET", urlModule, headers, null);
 	}
 
 	/**
@@ -142,16 +130,12 @@ public class GauthifyClientImpl implements GauthifyClient {
 	 */
 	@Override
 	public GauthifyResponse getUserById(String userId) throws Exception {
-		String url = getUrlBase() + String.format(USER_URI, userId);
+		String urlModule = String.format(USER_URI, userId);
 
 		Map<String, String> headers = new HashMap<String, String>();
 		headers.put("Authorization", generateBasicAuthString(EMPTY_USERNAME, apiKey));
 
-		HttpResponse response = gauthifyHttpClient.getURL(url, headers, null);
-
-		GauthifyResponse userResponse = this.handleResponse(response);
-
-		return userResponse;
+		return this.handleRequest("GET", urlModule, headers, null);
 	}
 
 	/**
@@ -162,19 +146,15 @@ public class GauthifyClientImpl implements GauthifyClient {
 	 */
 	@Override
 	public GauthifyResponse getUserByToken(String token) throws Exception {
-		String url = getUrlBase() + String.format(USER_TOKEN_URI, token);
+		String urlModule = String.format(USER_TOKEN_URI, token);
 
 		Map<String, String> headers = new HashMap<String, String>();
 		headers.put("Authorization", generateBasicAuthString(EMPTY_USERNAME, apiKey));
 
-		Map<String, String> params = new HashMap<String, String>();
-		params.put("token",token);
+		Map<String, String> fields = new HashMap<String, String>();
+		fields.put("token",token);
 
-		HttpResponse response = gauthifyHttpClient.postURL(url, headers, params);
-
-		GauthifyResponse userResponse = this.handleResponse(response);
-
-		return userResponse;
+		return this.handleRequest("POST", urlModule, headers, fields);
 	}
 
 	/**
@@ -186,20 +166,16 @@ public class GauthifyClientImpl implements GauthifyClient {
 	 */
 	@Override
 	public GauthifyResponse getUserAndCheckToken(String userId,String authCode) throws Exception {
-		String url = getUrlBase() + USER_CHECK_TOKEN_URI;
+		String urlModule = USER_CHECK_TOKEN_URI;
 
 		Map<String, String> headers = new HashMap<String, String>();
 		headers.put("Authorization", generateBasicAuthString(EMPTY_USERNAME, apiKey));
 
-		Map<String, String> params = new HashMap<String, String>();
-		params.put("unique_id",userId);
-		params.put("auth_code",authCode);
+		Map<String, String> fields = new HashMap<String, String>();
+		fields.put("unique_id",userId);
+		fields.put("auth_code",authCode);
 
-		HttpResponse response = gauthifyHttpClient.postURL(url, headers, params);
-
-		GauthifyResponse userResponse = this.handleResponse(response);
-
-		return userResponse;
+		return this.handleRequest("POST", urlModule, headers, fields);
 	}
 
 	/**
@@ -213,7 +189,7 @@ public class GauthifyClientImpl implements GauthifyClient {
 	 */
 	@Override
 	public GauthifyResponse createUser(String userId,String displayName,String email,String phoneNumber) throws Exception {
-		String url = getUrlBase() + USERS_URI;
+		String urlModule =  USERS_URI;
 
 		Map<String, String> headers = new HashMap<String, String>();
 		headers.put("Authorization", generateBasicAuthString(EMPTY_USERNAME, apiKey));
@@ -225,11 +201,7 @@ public class GauthifyClientImpl implements GauthifyClient {
 		fields.put("phone_number", phoneNumber);
 		fields.put("email", email);
 
-		HttpResponse response = gauthifyHttpClient.postURL(url, headers, fields);
-
-		GauthifyResponse userResponse = this.handleResponse(response);
-
-		return userResponse;
+		return this.handleRequest("POST", urlModule, headers, fields);
 	}
 	
 	/**
@@ -243,7 +215,7 @@ public class GauthifyClientImpl implements GauthifyClient {
 	 */
 	@Override
 	public GauthifyResponse updateUser(String userId,String displayName,String email,String phoneNumber,String meta,boolean resetKey) throws Exception {
-		String url = getUrlBase() + String.format(USER_URI, userId);
+		String urlModule = String.format(USER_URI, userId);
 
 		Map<String, String> headers = new HashMap<String, String>();
 		headers.put("Authorization", generateBasicAuthString(EMPTY_USERNAME, apiKey));
@@ -256,11 +228,7 @@ public class GauthifyClientImpl implements GauthifyClient {
 		fields.put("meta", meta);
 		fields.put("reset_key", resetKey == true ? "1": "0");
 
-		HttpResponse response = gauthifyHttpClient.putURL(url, headers, fields);
-
-		GauthifyResponse userResponse = this.handleResponse(response);
-
-		return userResponse;		
+		return this.handleRequest("PUT", urlModule, headers, fields);		
 	}
 
 	/**
@@ -271,16 +239,12 @@ public class GauthifyClientImpl implements GauthifyClient {
 	 */
 	@Override
 	public GauthifyResponse deleteUser(String userId) throws Exception {
-		String url = getUrlBase() + String.format(USER_URI, userId);
+		String urlModule = String.format(USER_URI, userId);
 
 		Map<String, String> headers = new HashMap<String, String>();
 		headers.put("Authorization", generateBasicAuthString(EMPTY_USERNAME, apiKey));
 
-		HttpResponse response = gauthifyHttpClient.deleteURL(url, headers, null);
-
-		GauthifyResponse userResponse = this.handleResponse(response);
-
-		return userResponse;		
+		return this.handleRequest("DELETE", urlModule, headers, null);		
 	}
 
 	/**
@@ -292,20 +256,16 @@ public class GauthifyClientImpl implements GauthifyClient {
 	 */
 	@Override
 	public GauthifyResponse sendEmailOpt(String userId,String email) throws Exception {
-		String url = getUrlBase() + USER_EMAIL_URI;
+		String urlModule = USER_EMAIL_URI;
 
 		Map<String, String> headers = new HashMap<String, String>();
 		headers.put("Authorization", generateBasicAuthString(EMPTY_USERNAME, apiKey));
 
-		Map<String, String> params = new HashMap<String, String>();
-		params.put("unique_id",userId);
-		params.put("email",email);
+		Map<String, String> fields = new HashMap<String, String>();
+		fields.put("unique_id",userId);
+		fields.put("email",email);
 
-		HttpResponse response = gauthifyHttpClient.postURL(url, headers, params);
-
-		GauthifyResponse userResponse = this.handleResponse(response);
-
-		return userResponse;
+		return this.handleRequest("POST", urlModule, headers, fields);
 	}
 
 	/**
@@ -317,38 +277,79 @@ public class GauthifyClientImpl implements GauthifyClient {
 	 */
 	@Override
 	public GauthifyResponse sendSmsOpt(String userId,String phoneNumber) throws Exception {
-		String url = getUrlBase() + USER_SMS_URI;
+		String urlModule = USER_SMS_URI;
 
 		Map<String, String> headers = new HashMap<String, String>();
 		headers.put("Authorization", generateBasicAuthString(EMPTY_USERNAME, apiKey));
 
-		Map<String, String> params = new HashMap<String, String>();
-		params.put("unique_id",userId);
-		params.put("sms_number",phoneNumber);
+		Map<String, String> fields = new HashMap<String, String>();
+		fields.put("unique_id",userId);
+		fields.put("sms_number",phoneNumber);
 
-		HttpResponse response = gauthifyHttpClient.postURL(url, headers, params);
-
-		GauthifyResponse userResponse = this.handleResponse(response);
-
-		return userResponse;
+		return this.handleRequest("POST", urlModule, headers, fields);
 	}
 
 	@Override
 	public GauthifyResponse sendVoiceOpt(String userId, String phoneNumber) throws Exception {
-		String url = getUrlBase() + USER_VOICE_URI;
+		String urlModule = USER_VOICE_URI;
 
 		Map<String, String> headers = new HashMap<String, String>();
 		headers.put("Authorization", generateBasicAuthString(EMPTY_USERNAME, apiKey));
 
-		Map<String, String> params = new HashMap<String, String>();
-		params.put("unique_id",userId);
-		params.put("voice_number",phoneNumber);
+		Map<String, String> fields = new HashMap<String, String>();
+		fields.put("unique_id",userId);
+		fields.put("voice_number",phoneNumber);
 
-		HttpResponse response = gauthifyHttpClient.postURL(url, headers, params);
+		return this.handleRequest("POST", urlModule, headers, fields);
+	}
 
-		GauthifyResponse userResponse = this.handleResponse(response);
+	/**
+	 * Handle any HTTP request
+	 * @param httpMethod: POST,GET,PUT,DELETE
+	 * @param urlModule: Relative URL
+	 * @param headers: Http Headers
+	 * @param fields: Fiels to http request
+	 * @return GauthifyResponse
+	 * @throws Exception
+	 */
+	public GauthifyResponse handleRequest(String httpMethod,String urlModule,Map<String,String> headers,Map<String,String> fields) throws Exception {
+		httpMethod = httpMethod.toUpperCase();
 
-		return userResponse;
+		GauthifyResponse gauthifyResponse = null;
+		HttpResponse httpResponse = null;
+
+		String[] endPoints = END_POINTS;
+
+		for(String endPoint : endPoints) {
+			String url = endPoint + urlModule;
+
+			try {
+				if(httpMethod.equals("GET")) {
+					httpResponse = this.getGauthifyHttpClient().getURL(url, headers, fields);
+				} else if(httpMethod.equals("POST")) {
+					httpResponse = this.getGauthifyHttpClient().postURL(url, headers, fields);
+				} else if(httpMethod.equals("PUT")) {
+					httpResponse = this.getGauthifyHttpClient().putURL(url, headers, fields);
+				} else if(httpMethod.equals("DELETE")) {
+					httpResponse = this.getGauthifyHttpClient().deleteURL(url, headers, fields);
+				}
+
+				gauthifyResponse = this.handleResponse(httpResponse);
+
+				return gauthifyResponse;
+			} catch(GauthifyException e) {
+				throw e;
+			} catch(Exception e) {
+				//Last endpoint
+				if(endPoint.equals(endPoints[endPoints.length -1])) {
+					throw new GauthifyException("500", e.getMessage() + " Please contact support@gauthify.com for help");
+				}
+
+				continue;
+			}
+		}
+
+		return null;
 	}
 
 	/**
@@ -362,18 +363,6 @@ public class GauthifyClientImpl implements GauthifyClient {
 		byte[] base64 = Base64.encodeBase64(sb.toString().getBytes());
 
 		return new StringBuilder("Basic ").append(new String(base64)).toString();
-	}
-
-	@Override
-	public String getUrlBase() {
-		switch(getMode()) {
-			case PDN_MODE:
-					return PDN_URL_BASE;
-			case BETA_MODE:
-				return BETA_URL_BASE;
-			default:
-				return ALPHA_URL_BASE;
-		}
 	}
 
 	@Override

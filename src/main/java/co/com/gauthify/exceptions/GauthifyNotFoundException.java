@@ -1,4 +1,4 @@
-package co.com.fsistemas.gauthify.exceptions;
+package co.com.gauthify.exceptions;
 
 public class GauthifyNotFoundException extends GauthifyException {
 	public GauthifyNotFoundException(String httpStatusCode, String message) {

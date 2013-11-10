@@ -1,4 +1,4 @@
-package co.com.fsistemas.gauthify.client;
+package co.com.gauthify.client;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -12,12 +12,12 @@ import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.map.ObjectMapper;
 
-import co.com.fsistemas.gauthify.exceptions.GauthifyApiException;
-import co.com.fsistemas.gauthify.exceptions.GauthifyException;
-import co.com.fsistemas.gauthify.exceptions.GauthifyNotFoundException;
-import co.com.fsistemas.gauthify.exceptions.GauthifyParameterException;
-import co.com.fsistemas.gauthify.exceptions.GauthifyRateLimitException;
-import co.com.fsistemas.gauthify.http.GauthifyHttpClient;
+import co.com.gauthify.exceptions.GauthifyApiException;
+import co.com.gauthify.exceptions.GauthifyException;
+import co.com.gauthify.exceptions.GauthifyNotFoundException;
+import co.com.gauthify.exceptions.GauthifyParameterException;
+import co.com.gauthify.exceptions.GauthifyRateLimitException;
+import co.com.gauthify.http.GauthifyHttpClient;
 
 public class GauthifyClientImpl implements GauthifyClient {
 	private boolean enableDebug = true;

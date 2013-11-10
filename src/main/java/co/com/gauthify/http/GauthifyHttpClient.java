@@ -1,4 +1,4 @@
-package co.com.fsistemas.gauthify.http;
+package co.com.gauthify.http;
 
 import java.util.Map;
 

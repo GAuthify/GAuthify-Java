@@ -1,4 +1,4 @@
-package co.com.fsistemas.gauthify.client;
+package co.com.gauthify.client;
 
 import org.codehaus.jackson.JsonNode;
 

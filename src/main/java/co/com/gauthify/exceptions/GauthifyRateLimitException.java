@@ -1,4 +1,4 @@
-package co.com.fsistemas.gauthify.exceptions;
+package co.com.gauthify.exceptions;
 
 public class GauthifyRateLimitException extends GauthifyException {
 	public GauthifyRateLimitException(String httpStatusCode, String message) {

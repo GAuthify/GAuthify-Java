@@ -1,10 +1,10 @@
-package co.com.fsistemas.gauthify.client;
+package co.com.gauthify.client;
 
 import java.util.Map;
 
 import org.apache.http.HttpResponse;
 
-import co.com.fsistemas.gauthify.http.GauthifyHttpClient;
+import co.com.gauthify.http.GauthifyHttpClient;
 
 public interface GauthifyClient {
 	public String getApiKey();

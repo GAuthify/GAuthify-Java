@@ -1,4 +1,4 @@
-package co.com.fsistemas.gauthify.exceptions;
+package co.com.gauthify.exceptions;
 
 public class GauthifyParameterException extends GauthifyException {
 	public GauthifyParameterException(String httpStatusCode, String message) {

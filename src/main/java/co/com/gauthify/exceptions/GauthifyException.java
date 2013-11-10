@@ -1,4 +1,4 @@
-package co.com.fsistemas.gauthify.exceptions;
+package co.com.gauthify.exceptions;
 
 public class GauthifyException extends Exception {
 	private static final long serialVersionUID = -3124131083515751512L;

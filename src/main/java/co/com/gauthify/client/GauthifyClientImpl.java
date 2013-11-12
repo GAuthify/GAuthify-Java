@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonParser;
@@ -21,6 +22,15 @@ import co.com.gauthify.http.GauthifyHttpClient;
 
 public class GauthifyClientImpl implements GauthifyClient {
 	private boolean enableDebug = true;
+	private String userAccesPoint;
+
+	public String getUserAccesPoint() {
+		return userAccesPoint;
+	}
+
+	public void setUserAccesPoint(String userAccesPoint) {
+		this.userAccesPoint = userAccesPoint;
+	}
 
 	private String apiKey;
 	private GauthifyHttpClient gauthifyHttpClient;
@@ -179,16 +189,45 @@ public class GauthifyClientImpl implements GauthifyClient {
 	}
 
 	/**
+	 * Validar si un usuario esta autenticado
+	 * @param userId
+	 * @param authCode
+	 * @return
+	 * @throws Exception
+	 */
+	public boolean checkAuth(String userId,String authCode) throws Exception {
+		boolean isAuthenticated = false;
+
+		GauthifyResponse response = this.getUserAndCheckToken(userId, authCode);
+
+		if(response != null && response.getHttpStatus() == HttpStatus.SC_OK) {
+			JsonNode data = response.getData();
+
+			if(data != null) {
+				JsonNode authenticated = data.get("authenticated");
+
+				if(authenticated != null) {
+					isAuthenticated = authenticated.asBoolean();
+				}
+			}
+		}
+
+		return isAuthenticated;
+	}
+
+	/**
 	 * Crear un usuario o actualiza uno existente
 	 * @param userId
 	 * @param displayName
 	 * @param email
-	 * @param phoneNumber
+	 * @param smsNumber
+	 * @param voiceNumber
+	 * @param meta: String in json object format
 	 * @return
 	 * @throws Exception
 	 */
 	@Override
-	public GauthifyResponse createUser(String userId,String displayName,String email,String phoneNumber) throws Exception {
+	public GauthifyResponse createUser(String userId,String displayName,String email,String smsNumber,String voiceNumber,String meta) throws Exception {
 		String urlModule =  USERS_URI;
 
 		Map<String, String> headers = new HashMap<String, String>();
@@ -198,8 +237,22 @@ public class GauthifyClientImpl implements GauthifyClient {
 
 		fields.put("unique_id", userId);
 		fields.put("display_name", displayName);
-		fields.put("phone_number", phoneNumber);
-		fields.put("email", email);
+
+		if(email != null && email.length() > 0) {
+			fields.put("email", email);
+		}
+
+		if(smsNumber != null && smsNumber.length() > 0) {
+			fields.put("sms_number", smsNumber);
+		}
+
+		if(voiceNumber != null && voiceNumber.length() > 0) {
+			fields.put("voice_number", voiceNumber);
+		}
+
+		if(meta != null && meta.length() > 0) {
+			fields.put("meta", meta);
+		}
 
 		return this.handleRequest("POST", urlModule, headers, fields);
 	}
@@ -209,12 +262,13 @@ public class GauthifyClientImpl implements GauthifyClient {
 	 * @param userId
 	 * @param displayName
 	 * @param email
-	 * @param phoneNumber
+	 * @param smsNumber
+	 * @param voiceNumber
 	 * @return
 	 * @throws Exception
 	 */
 	@Override
-	public GauthifyResponse updateUser(String userId,String displayName,String email,String phoneNumber,String meta,boolean resetKey) throws Exception {
+	public GauthifyResponse updateUser(String userId,String email,String smsNumber,String voiceNumber,String meta,boolean resetKey) throws Exception {
 		String urlModule = String.format(USER_URI, userId);
 
 		Map<String, String> headers = new HashMap<String, String>();
@@ -222,11 +276,11 @@ public class GauthifyClientImpl implements GauthifyClient {
 
 		Map<String, String> fields = new HashMap<String, String>();
 
-		fields.put("display_name", displayName);
-		fields.put("phone_number", phoneNumber);
+		fields.put("sms_number", smsNumber);
+		fields.put("voice_number", voiceNumber);
 		fields.put("email", email);
 		fields.put("meta", meta);
-		fields.put("reset_key", resetKey == true ? "1": "0");
+		fields.put("reset_key", resetKey == true ? "true": "false");
 
 		return this.handleRequest("PUT", urlModule, headers, fields);		
 	}
@@ -320,8 +374,11 @@ public class GauthifyClientImpl implements GauthifyClient {
 
 		String[] endPoints = END_POINTS;
 
-		for(String endPoint : endPoints) {
-			String url = endPoint + urlModule;
+		String userEndPoint = this.getUserAccesPoint();
+
+		//Specific
+		if(userEndPoint != null && userEndPoint.length() > 0) {
+			String url = userEndPoint + urlModule;
 
 			try {
 				if(httpMethod.equals("GET")) {
@@ -340,12 +397,36 @@ public class GauthifyClientImpl implements GauthifyClient {
 			} catch(GauthifyException e) {
 				throw e;
 			} catch(Exception e) {
-				//Last endpoint
-				if(endPoint.equals(endPoints[endPoints.length -1])) {
-					throw new GauthifyException("500", e.getMessage() + " Please contact support@gauthify.com for help");
-				}
+				throw new GauthifyException("500", e.getMessage() + " Please contact support@gauthify.com for help, endPoint: " + userEndPoint + " is not working");
+			}
+		} else {
+			for(String endPoint : endPoints) {
+				String url = endPoint + urlModule;
 
-				continue;
+				try {
+					if(httpMethod.equals("GET")) {
+						httpResponse = this.getGauthifyHttpClient().getURL(url, headers, fields);
+					} else if(httpMethod.equals("POST")) {
+						httpResponse = this.getGauthifyHttpClient().postURL(url, headers, fields);
+					} else if(httpMethod.equals("PUT")) {
+						httpResponse = this.getGauthifyHttpClient().putURL(url, headers, fields);
+					} else if(httpMethod.equals("DELETE")) {
+						httpResponse = this.getGauthifyHttpClient().deleteURL(url, headers, fields);
+					}
+
+					gauthifyResponse = this.handleResponse(httpResponse);
+
+					return gauthifyResponse;
+				} catch(GauthifyException e) {
+					throw e;
+				} catch(Exception e) {
+					//Last endpoint
+					if(endPoint.equals(endPoints[endPoints.length -1])) {
+						throw new GauthifyException("500", e.getMessage() + " Please contact support@gauthify.com for help");
+					}
+
+					continue;
+				}
 			}
 		}
 

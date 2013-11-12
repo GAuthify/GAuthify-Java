@@ -142,8 +142,6 @@ public class GauthifyHttpClientImpl implements GauthifyHttpClient {
 			}
 		}
 
-		request.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-
 		if(fields != null) {
 			Set<Entry<String, String>> entrySetFields = fields.entrySet();
 
@@ -154,6 +152,8 @@ public class GauthifyHttpClientImpl implements GauthifyHttpClient {
 
 				nameValuePairs.add(new BasicNameValuePair(currentFidld.getKey(), currentFidld.getValue()));
 			}
+
+			request.setEntity(new UrlEncodedFormEntity(nameValuePairs,HTTP.UTF_8));
 		}
 
 		HttpResponse response = client.execute(request);

@@ -10,26 +10,23 @@ public interface GauthifyClient {
 	public String getApiKey();
 	public void setApiKey(String apiKey);
 
-	/*
-	public int getMode();
-	public void setMode(int mode);
-	*/
-
 	public boolean isEnableDebug();
 	public void setEnableDebug(boolean enableDebug);
 
-	//public String getUrlBase();
-
 	public void setGauthifyHttpClient(GauthifyHttpClient gauthifyHttpClient);
 	public GauthifyHttpClient getGauthifyHttpClient();
+
+	public String getUserAccesPoint();
+	public void setUserAccesPoint(String userAccesPoint);
 
 	public GauthifyResponse handleResponse(HttpResponse response) throws Exception;
 	public GauthifyResponse getUsers() throws Exception;
 	public GauthifyResponse getUserById(String userId) throws Exception;
 	public GauthifyResponse getUserByToken(String token) throws Exception;
 	public GauthifyResponse getUserAndCheckToken(String userId,String token) throws Exception;
-	public GauthifyResponse createUser(String userId,String displayName,String email,String phoneNumber) throws Exception;
-	public GauthifyResponse updateUser(String userId,String displayName,String email,String phoneNumber,String meta,boolean resetKey) throws Exception;
+	public boolean checkAuth(String userId,String authCode) throws Exception;
+	public GauthifyResponse createUser(String userId,String displayName,String email,String smsNumber,String voiceNumber,String meta) throws Exception;
+	public GauthifyResponse updateUser(String userId,String email,String smsNumber,String voiceNumber,String meta,boolean resetKey) throws Exception;
 	public GauthifyResponse deleteUser(String userId) throws Exception;
 	public GauthifyResponse sendEmailOpt(String userId,String email) throws Exception;
 	public GauthifyResponse sendSmsOpt(String userId,String phoneNnumber) throws Exception;

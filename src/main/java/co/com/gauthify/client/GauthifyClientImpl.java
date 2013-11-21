@@ -56,6 +56,7 @@ public class GauthifyClientImpl implements GauthifyClient {
 	}
 
 	/**
+     * Prcess a gauthify request and obtain a response
 	 * Procesar una respuesta de Gauthify y obtener la respuesta
 	 * @param response
 	 * @return
@@ -117,6 +118,7 @@ public class GauthifyClientImpl implements GauthifyClient {
 	}
 
 	/**
+     *  Use a user id to retrieve all users
 	 * Consultar un usuario dado el legacy id del usuario
 	 * @param userId
 	 * @return
@@ -133,6 +135,7 @@ public class GauthifyClientImpl implements GauthifyClient {
 	}
 
 	/**
+     * Retreive a user by ID
 	 * Consultar un usuario dado el legacy id del usuario
 	 * @param userId
 	 * @return
@@ -149,6 +152,7 @@ public class GauthifyClientImpl implements GauthifyClient {
 	}
 
 	/**
+     * Retrieve a user by token
 	 * Consultar un usuario dado el token de Gauthify
 	 * @param token
 	 * @return
@@ -168,6 +172,7 @@ public class GauthifyClientImpl implements GauthifyClient {
 	}
 
 	/**
+     *  Retrieve a user and checks the auth token
 	 * Consultar la informacion de un usuario y validar un token de autenticacion, si el token es valido el atributo authenticated del objeto json data que se obtiene como respuesta tiene como valor true, en caso contrario tiene como valor false
 	 * @param userId
 	 * @param authCode
@@ -189,6 +194,7 @@ public class GauthifyClientImpl implements GauthifyClient {
 	}
 
 	/**
+     *  Check whether a user is authenticated (alias of getUserAndCheckToken but bool return)
 	 * Validar si un usuario esta autenticado
 	 * @param userId
 	 * @param authCode
@@ -216,6 +222,7 @@ public class GauthifyClientImpl implements GauthifyClient {
 	}
 
 	/**
+     *  Create a user
 	 * Crear un usuario o actualiza uno existente
 	 * @param userId
 	 * @param displayName
@@ -258,6 +265,7 @@ public class GauthifyClientImpl implements GauthifyClient {
 	}
 
 	/**
+     *  Update a user
 	 * Actualizar un usuario, crea uno nuevo si no existe
 	 * @param userId
 	 * @param displayName
@@ -286,6 +294,7 @@ public class GauthifyClientImpl implements GauthifyClient {
 	}
 
 	/**
+     *  Permanently delete a user
 	 * Eliminar un uusuario en forma permanente
 	 * @param userId
 	 * @return
@@ -302,6 +311,7 @@ public class GauthifyClientImpl implements GauthifyClient {
 	}
 
 	/**
+     *  Send user an email with their OTP code
 	 * Send a e-mail to user with OTP code
 	 * @param userId
 	 * @param email
@@ -323,6 +333,7 @@ public class GauthifyClientImpl implements GauthifyClient {
 	}
 
 	/**
+     * Call a user with their OTP code
 	 * Send a SMS to user with OTP code
 	 * @param userId
 	 * @param phoneNumber
@@ -358,6 +369,7 @@ public class GauthifyClientImpl implements GauthifyClient {
 	}
 
 	/**
+     *  HTTP request handler
 	 * Handle any HTTP request
 	 * @param httpMethod: POST,GET,PUT,DELETE
 	 * @param urlModule: Relative URL
@@ -434,6 +446,7 @@ public class GauthifyClientImpl implements GauthifyClient {
 	}
 
 	/**
+     *  Generate headers for http Auth using API key
 	 * Generate String to Http Basic Autentication
 	 * @param username
 	 * @param password

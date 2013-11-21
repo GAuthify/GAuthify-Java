@@ -28,9 +28,9 @@ public interface GauthifyClient {
 	public GauthifyResponse createUser(String userId,String displayName,String email,String smsNumber,String voiceNumber,String meta) throws Exception;
 	public GauthifyResponse updateUser(String userId,String email,String smsNumber,String voiceNumber,String meta,boolean resetKey) throws Exception;
 	public GauthifyResponse deleteUser(String userId) throws Exception;
-	public GauthifyResponse sendEmailOpt(String userId,String email) throws Exception;
-	public GauthifyResponse sendSmsOpt(String userId,String phoneNnumber) throws Exception;
-	public GauthifyResponse sendVoiceOpt(String userId,String phoneNnumber) throws Exception;
+	public GauthifyResponse sendEmailOtp(String userId,String email) throws Exception;
+	public GauthifyResponse sendSmsOtp(String userId,String phoneNnumber) throws Exception;
+	public GauthifyResponse sendVoiceOtp(String userId,String phoneNnumber) throws Exception;
 	public GauthifyResponse handleRequest(String httpMethod,String urlModule,Map<String,String> headers,Map<String,String> fields) throws Exception;
 
 	public String generateBasicAuthString(String username,String password) throws Exception;

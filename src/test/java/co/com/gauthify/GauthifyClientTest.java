@@ -42,7 +42,7 @@ public class GauthifyClientTest {
 		data = null;
 		data2 = null;
 
-		gauthifyHttpClient = new GauthifyHttpClientImpl(); 
+		gauthifyHttpClient = new GauthifyHttpClientImpl();
 		gauthifyClient = new GauthifyClientImpl();
 
 		gauthifyClient.setGauthifyHttpClient(gauthifyHttpClient);
@@ -145,7 +145,7 @@ public class GauthifyClientTest {
 	public void hSendEmailTest() throws Exception {
         System.out.printf("5A) Testing email to %s\n",accountName);
 
-        result = gauthifyClient.sendEmailOpt(accountName, testEmail);
+        result = gauthifyClient.sendEmailOtp(accountName, testEmail);
 
         Assert.assertNotNull(result);
         Assert.assertEquals(HttpStatus.SC_OK,result.getHttpStatus());
@@ -155,7 +155,7 @@ public class GauthifyClientTest {
 	public void iSendSmsTest() throws Exception {
         System.out.printf("5B) Testing SMS to %s\n",accountName);
 
-        result = gauthifyClient.sendSmsOpt(accountName, testSmsNumber);
+        result = gauthifyClient.sendSmsOtp(accountName, testSmsNumber);
 
         Assert.assertNotNull(result);
         Assert.assertEquals(HttpStatus.SC_OK,result.getHttpStatus());
@@ -165,7 +165,7 @@ public class GauthifyClientTest {
 	public void jSendVoiceTest() throws Exception {
         System.out.printf("5C) Testing call to %s\n",accountName);
 
-        result = gauthifyClient.sendVoiceOpt(accountName, testVoiceNumber);
+        result = gauthifyClient.sendVoiceOtp(accountName, testVoiceNumber);
 
         Assert.assertNotNull(result);
         Assert.assertEquals(HttpStatus.SC_OK,result.getHttpStatus());
@@ -211,8 +211,8 @@ public class GauthifyClientTest {
         Assert.assertNotNull(result2);
         Assert.assertEquals(HttpStatus.SC_OK,result2.getHttpStatus());
 
-        
-        
+
+
         data2 = result2.getData();
 
         Assert.assertNotNull(data2);

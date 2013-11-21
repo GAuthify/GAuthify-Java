@@ -91,7 +91,7 @@ public class GauthifyClientImpl implements GauthifyClient {
 
 			JsonNode errorMessageJsonNode = userJsonNode.get("error_message");
 			String errorMessage = errorMessageJsonNode == null ? "" : errorMessageJsonNode.getTextValue();
-			
+
 			JsonNode errorCodeJsonNode = userJsonNode.get("error_code");
 
 			String errorCode = errorCodeJsonNode == null ? "" : errorCodeJsonNode.getTextValue();
@@ -256,7 +256,7 @@ public class GauthifyClientImpl implements GauthifyClient {
 
 		return this.handleRequest("POST", urlModule, headers, fields);
 	}
-	
+
 	/**
 	 * Actualizar un usuario, crea uno nuevo si no existe
 	 * @param userId
@@ -282,7 +282,7 @@ public class GauthifyClientImpl implements GauthifyClient {
 		fields.put("meta", meta);
 		fields.put("reset_key", resetKey == true ? "true": "false");
 
-		return this.handleRequest("PUT", urlModule, headers, fields);		
+		return this.handleRequest("PUT", urlModule, headers, fields);
 	}
 
 	/**
@@ -298,18 +298,18 @@ public class GauthifyClientImpl implements GauthifyClient {
 		Map<String, String> headers = new HashMap<String, String>();
 		headers.put("Authorization", generateBasicAuthString(EMPTY_USERNAME, apiKey));
 
-		return this.handleRequest("DELETE", urlModule, headers, null);		
+		return this.handleRequest("DELETE", urlModule, headers, null);
 	}
 
 	/**
-	 * Send a e-mail to user with OTP code 
+	 * Send a e-mail to user with OTP code
 	 * @param userId
 	 * @param email
 	 * @return
 	 * @throws Exception
 	 */
 	@Override
-	public GauthifyResponse sendEmailOpt(String userId,String email) throws Exception {
+	public GauthifyResponse sendEmailOtp(String userId,String email) throws Exception {
 		String urlModule = USER_EMAIL_URI;
 
 		Map<String, String> headers = new HashMap<String, String>();
@@ -330,7 +330,7 @@ public class GauthifyClientImpl implements GauthifyClient {
 	 * @throws Exception
 	 */
 	@Override
-	public GauthifyResponse sendSmsOpt(String userId,String phoneNumber) throws Exception {
+	public GauthifyResponse sendSmsOtp(String userId,String phoneNumber) throws Exception {
 		String urlModule = USER_SMS_URI;
 
 		Map<String, String> headers = new HashMap<String, String>();
@@ -344,7 +344,7 @@ public class GauthifyClientImpl implements GauthifyClient {
 	}
 
 	@Override
-	public GauthifyResponse sendVoiceOpt(String userId, String phoneNumber) throws Exception {
+	public GauthifyResponse sendVoiceOtp(String userId, String phoneNumber) throws Exception {
 		String urlModule = USER_VOICE_URI;
 
 		Map<String, String> headers = new HashMap<String, String>();
@@ -434,7 +434,7 @@ public class GauthifyClientImpl implements GauthifyClient {
 	}
 
 	/**
-	 * Generate String to Http Basic Autentication 
+	 * Generate String to Http Basic Autentication
 	 * @param username
 	 * @param password
 	 * @return

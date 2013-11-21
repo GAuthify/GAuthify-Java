@@ -436,7 +436,6 @@ public class GauthifyClientImpl implements GauthifyClient {
 					if(endPoint.equals(endPoints[endPoints.length -1])) {
 						throw new GauthifyException("500", e.getMessage() + " Please contact support@gauthify.com for help");
 					}
-
 					continue;
 				}
 			}
